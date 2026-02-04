@@ -9,21 +9,19 @@ import {
   RotateCcw,
 } from "lucide-react";
 
-import type { Point, InputState, Chat } from "@/types";
-import { getBlobImage } from "@/utils";
+import type { InputState, Chat } from "@/types";
+import { getBlobImage, drawPointOnImage, POINT_RADIUS_SCREEN } from "@/utils";
 import * as API from "@/api";
-
-const POINT_RADIUS_SCREEN = 16;
 
 type ResultBoxProps = {
   loading: boolean;
   draggingIndex: number | null;
-  setDraggingIndex: (draggingIndex: number) => void;
+  setDraggingIndex: (draggingIndex: number | null) => void;
   hoveredIndex: number | null;
-  setHoveredIndex: (hoveredIndex: number) => void;
-  errors: object;
+  setHoveredIndex: (hoveredIndex: number | null) => void;
+  errors: {error: string | null};
   setLoading: (loading: boolean) => void;
-  setErrors: (errors: object) => void;
+  setErrors: React.Dispatch<React.SetStateAction<{error: string | null}>>;
   prevState: InputState;
   setPrevState: (prevState: InputState) => void;
   currentState: InputState;
@@ -31,7 +29,7 @@ type ResultBoxProps = {
   redoState: InputState;
   setRedoState: (redoState: InputState) => void;
   setShowBar: (showBar: boolean) => void;
-  setChats: (chats: Chat[]) => void;
+  setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
 };
 
 const ResultBox: React.FC<ResultBoxProps> = ({
@@ -40,7 +38,6 @@ const ResultBox: React.FC<ResultBoxProps> = ({
   setDraggingIndex,
   hoveredIndex,
   setHoveredIndex,
-  errors,
   setLoading,
   setErrors,
   setPrevState,
@@ -84,7 +81,7 @@ const ResultBox: React.FC<ResultBoxProps> = ({
     }
 
     currentState.points.forEach((p, i) => {
-      drawPoint(
+      drawPointOnImage(
         ctx,
         p,
         i === draggingIndex || i === hoveredIndex,
@@ -119,27 +116,6 @@ const ResultBox: React.FC<ResultBoxProps> = ({
       const dy = p.y - pos.y;
       return Math.sqrt(dx * dx + dy * dy) <= hitRadius;
     });
-  };
-
-  const drawPoint = (
-    ctx: CanvasRenderingContext2D,
-    point: Point,
-    active: boolean,
-    radius: number,
-  ) => {
-    ctx.beginPath();
-    ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
-    ctx.fillStyle = active ? "#ffffff" : "#f6339a";
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2 * (radius / POINT_RADIUS_SCREEN);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = active ? "#f6339a" : "#ffffff";
-    ctx.font = `bold ${12 * (radius / POINT_RADIUS_SCREEN)}px system-ui`;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-    ctx.fillText(String(point.label), point.x, point.y);
   };
 
   /* mouse events */

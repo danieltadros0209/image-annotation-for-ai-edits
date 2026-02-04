@@ -12,14 +12,14 @@ type PromptBoxProps = {
   setLoading: (loading: boolean) => void;
   setDraggingIndex: (index: number | null) => void;
   setHoveredIndex: (index: number | null) => void;
-  setErrors: (errors: object) => void;
+  setErrors: React.Dispatch<React.SetStateAction<{error: string | null}>>;
   prevState: InputState;
   setPrevState: (prevState: InputState) => void;
   currentState: InputState;
   setCurrentState: (currentState: InputState) => void;
   redoState: InputState;
   setRedoState: (redoState: InputState) => void;
-  setChats: (chats: Chat[]) => void;
+  setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
   setShowSidebar: (showSidebar: boolean) => void;
   setSidebarVisible: (sidebarVisible: boolean) => void;
 };
@@ -37,7 +37,7 @@ const PromptBox: React.FC<PromptBoxProps> = ({
   setShowSidebar,
   setSidebarVisible,
 }) => {
-  const selectioinButtonGroup = currentState.points.map(
+  const selectionButtonGroup = currentState.points.map(
     (point: Point, index) => (
       <SelectionButton
         key={index}
@@ -56,27 +56,24 @@ const PromptBox: React.FC<PromptBoxProps> = ({
     uploadImageForm?.click();
   };
 
-  const onChangeImageUpload = (e: any) => {
+  const onChangeImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     setShowSidebar(true);
     setSidebarVisible(true);
     setLoading(true);
-    // setCurrentState({ ...currentState, image: null, points: [], prompt: "" });
 
-    // setTimeout(() => {
     const fileUploadForm = e.target;
     const img = new Image();
 
-    if (!fileUploadForm.files[0]) return;
+    if (!fileUploadForm.files?.[0]) return;
 
     img.src = URL.createObjectURL(fileUploadForm.files[0]);
     img.onload = () => {
       setCurrentState({ ...currentState, image: img, points: [] });
       setLoading(false);
     };
-    // }, 3000);
   };
 
-  const onChangePrompt = (e: any) => {
+  const onChangePrompt = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const promptForm = e.target;
 
     promptForm.style.height = "auto";
@@ -148,7 +145,7 @@ const PromptBox: React.FC<PromptBoxProps> = ({
           });
 
           setLoading(false);
-          setErrors({});
+          setErrors({error: null});
           toast.success("AI Image Generated Successfully");
         };
       })
@@ -177,7 +174,7 @@ const PromptBox: React.FC<PromptBoxProps> = ({
     <div className="rounded-2xl border border-gray-100 shadow-lg py-2 px-6">
       {currentState.points.length > 0 && (
         <div className="w-full overflow-auto max-h-60">
-          {selectioinButtonGroup}
+          {selectionButtonGroup}
         </div>
       )}
 

@@ -1,7 +1,5 @@
 import React from "react";
-
 import { X } from "lucide-react";
-
 import type { InputState } from "@/types";
 
 type SelectionButtonProps = {

@@ -1,5 +1,4 @@
 import express from "express";
-import bodyParser from "body-parser";
 import Replicate from "replicate";
 import cors from "cors";
 import multer from "multer";
@@ -33,8 +32,20 @@ app.post("/generate", upload.single("image"), async (req, res) => {
     const imageBase64 = imageBuffer.toString("base64");
     const imageDataUrl = `data:${imageMime};base64,${imageBase64}`;
 
+    const prompt = `
+      You are a professional image editor AI that receives images which contains a pink polygon.
+
+      Please check the polygon area and make edits to the image according to the user's instructions.
+      
+      1. Don't touch areas outside the polygon.
+      2. Make sure the edited area blends naturally with the rest of the image.
+      3. Follow the user's instructions carefully.
+      
+      ${req.body.prompt}    
+    `;
+
     const input = {
-      prompt: `Apply the following updates only to the area inside the pink polygon. Never change anything outside of the pink polygon area. ${req.body.prompt}`,
+      prompt,
       image_input: [imageDataUrl],
     };
 

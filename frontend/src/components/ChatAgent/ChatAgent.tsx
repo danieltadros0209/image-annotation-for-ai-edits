@@ -10,7 +10,7 @@ type ChatAgentProps = {
   setLoading: (loading: boolean) => void;
   setDraggingIndex: (index: number | null) => void;
   setHoveredIndex: (index: number | null) => void;
-  setErrors: (errors: object) => void;
+  setErrors: React.Dispatch<React.SetStateAction<{error: string | null}>>;
   setCurrentState: (currentState: InputState) => void;
   setPrevState: (prevState: InputState) => void;
   prevState: InputState;
@@ -19,7 +19,7 @@ type ChatAgentProps = {
   setRedoState: (redoState: InputState) => void;
   setShowSidebar: (showSidebar: boolean) => void;
   chats: Chat[];
-  setChats: (chats: Chat[]) => void;
+  setChats: React.Dispatch<React.SetStateAction<Chat[]>>;
   setSidebarVisible: (sidebarVisible: boolean) => void;
 };
 

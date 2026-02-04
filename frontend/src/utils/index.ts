@@ -31,10 +31,10 @@ export const getBlobImage = (
       return;
     }
 
-    // 1️⃣ Draw base image
+    // Draw base image
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
-    // 2️⃣ Draw polygon ONLY (no points)
+    // Draw polygon ONLY (no points)
     if (points.length >= 3) {
       ctx.beginPath();
       ctx.moveTo(points[0].x, points[0].y);
@@ -50,7 +50,7 @@ export const getBlobImage = (
       ctx.stroke();
     }
 
-    // 3️⃣ Export to Blob
+    // Export to Blob
     canvas.toBlob(
       (blob) => {
         if (!blob) {
@@ -64,3 +64,26 @@ export const getBlobImage = (
     );
   });
 };
+
+export const POINT_RADIUS_SCREEN = 16;
+
+export const drawPointOnImage = (
+    ctx: CanvasRenderingContext2D,
+    point: Point,
+    active: boolean,
+    radius: number,
+  ) => {
+    ctx.beginPath();
+    ctx.arc(point.x, point.y, radius, 0, Math.PI * 2);
+    ctx.fillStyle = active ? "#ffffff" : "#f6339a";
+    ctx.strokeStyle = "#ffffff";
+    ctx.lineWidth = 2 * (radius / POINT_RADIUS_SCREEN);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.fillStyle = active ? "#f6339a" : "#ffffff";
+    ctx.font = `bold ${12 * (radius / POINT_RADIUS_SCREEN)}px system-ui`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(String(point.label), point.x, point.y);
+  };

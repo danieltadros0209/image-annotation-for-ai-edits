@@ -30,10 +30,10 @@ function App() {
     prompt: "",
     points: [],
   });
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<{error: string | null}>({error: null});
 
   useEffect(() => {
-    if (errors.error) toast.error(errors.error, { duration: 3000 });
+    if (errors['error']) toast.error(errors['error']);
   }, [errors]);
 
   return (
